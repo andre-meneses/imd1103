@@ -198,6 +198,31 @@ class GeneralAgent:
             print("Environment not supported for direct visualization.")
 
 
+    def evaluate_performance(self, last_n_episodes=100):
+        """Evaluate the agent's performance over the last n episodes."""
+        if len(self.env.return_queue) < last_n_episodes:
+            print("Not enough episodes to evaluate performance.")
+            return
+
+        # Calculate average and standard deviation of rewards
+        recent_rewards = np.array(self.env.return_queue)[-last_n_episodes:]
+        average_reward = np.mean(recent_rewards)
+        std_reward = np.std(recent_rewards)
+
+        # Calculate average episode length
+        recent_lengths = np.array(self.env.length_queue)[-last_n_episodes:]
+        average_length = np.mean(recent_lengths)
+
+        # Prepare and return the performance metrics
+        performance_metrics = {
+            'average_reward': average_reward,
+            'std_reward': std_reward,
+            'average_length': average_length
+        }
+
+        return performance_metrics
+
+
 if __name__ == "__main__":
     agent = GeneralAgent(
         env_name='Taxi-v3',
@@ -213,3 +238,6 @@ if __name__ == "__main__":
     agent.train()
     agent.plot_training_info()
     agent.visualize_policy()
+
+    performance_metrics = agent.evaluate_performance(last_n_episodes=100)
+    print("Performance metrics:", performance_metrics)
