@@ -11,11 +11,13 @@ from general_agent import GeneralAgent
 # Define the hyperparameters grid
 learning_rates = [0.01, 0.1]
 initial_epsilons = [0.2, 0.7, 1.0]
-epsilon_decays = [0.01, 0.02]
-final_epsilons = [0.01, 0.05]
-discount_factors = [0.9, 0.95, 0.99]
-n_episodes_list = [20_000, 100_000]
+epsilon_decays = [0.01, 0.1]
+final_epsilons = [0.01]
+discount_factors = [0.95]
+n_episodes_list = [100_000]
 toy_text_envs = ['Blackjack-v1', 'CliffWalking-v0', 'FrozenLake-v1', 'Taxi-v3']
+
+
 
 # Store overall results to calculate averages
 results = defaultdict(list)
