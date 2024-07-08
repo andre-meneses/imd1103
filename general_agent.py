@@ -148,22 +148,23 @@ class GeneralAgent:
         elif env_name == 'Taxi-v3':
             # Taxi state space is more complex, decomposing state for visualization
             num_states = self.env.observation_space.n
-            policy_grid = np.zeros((5,5,5))
+            policy_grid = np.zeros((5,5,5,4))
             for state in range(num_states):
                 decoded = list(self.env.unwrapped.decode(state))
                 row, col, pass_idx, dest_idx = decoded
                 best_action = np.argmax(self.q_values[state])
-                policy_grid[row, col, pass_idx] = best_action
-            plt.figure(figsize=(10, 10))
-            for i in range(4):
-                plt.subplot(2, 2, i + 1)
-                plt.imshow(policy_grid[:, :, i], cmap="viridis")
-                plt.title(f"Passenger {i} Policy")
-                plt.colorbar()
-            plt.tight_layout()
-
-            plt.savefig(os.path.join(folder_path, "policy_visualization.pdf"))
-            plt.close()
+                policy_grid[row, col, pass_idx, dest_idx] = best_action
+            destinations = ['Red', 'Green', 'Yellow', 'Blue']
+            for dest in range(4):
+                plt.figure(figsize=(12, 10))
+                for pass_idx in range(5):
+                    plt.subplot(3, 2, pass_idx + 1)
+                    plt.imshow(policy_grid[:, :, pass_idx, dest], cmap="viridis")
+                    plt.title(f'Passenger {pass_idx} Policy - Destination {destinations[dest]}')
+                    plt.colorbar()
+                plt.tight_layout()
+                plt.savefig(os.path.join(folder_path, f"policy_visualization_dest_{destinations[dest]}.pdf"))
+                plt.close()
 
         elif env_name == 'Blackjack-v1':
             # Blackjack visualization (simplified example, considering only totals and ace presence)
@@ -205,7 +206,7 @@ if __name__ == "__main__":
         epsilon_decay=0.01,
         final_epsilon=0.1,
         discount_factor=0.95,
-        n_episodes=10000,
+        n_episodes=100,
         verbose=False,
         algorithm='sarsa'  # Choose 'sarsa' or 'q_learning'
     )
