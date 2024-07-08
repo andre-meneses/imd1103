@@ -8,7 +8,7 @@ import os
 class GeneralAgent:
     def __init__(self, env_name: str, learning_rate: float, initial_epsilon: float,
                  epsilon_decay: float, final_epsilon: float, discount_factor: float = 0.95,
-                 n_episodes: int = 100_000, verbose: bool = False, render_mode: str = "rgb_array"):
+                 n_episodes: int = 100_000, verbose: bool = False, render_mode: str = "rgb_array", algorithm: str = 'q_learning'):
         """Initialize a Reinforcement Learning agent for various environments."""
         self.env = gym.make(env_name, render_mode=render_mode)
         self.env = gym.wrappers.RecordEpisodeStatistics(self.env, deque_size=n_episodes)
@@ -22,6 +22,8 @@ class GeneralAgent:
         self.n_episodes = n_episodes
         self.verbose = verbose
         self.training_error = []
+        self.algorithm = algorithm  # Algorithm to use ('sarsa' or 'q_learning')
+
 
     def get_action(self, obs):
         """Choose an action based on the current observation."""
@@ -32,7 +34,12 @@ class GeneralAgent:
 
     def update(self, obs, action, reward, terminated, next_obs):
         """Updates the Q-value of an action based on the observed transition."""
-        future_q_value = (not terminated) * np.max(self.q_values[next_obs])
+        if self.algorithm == 'q_learning':
+            future_q_value = (not terminated) * np.max(self.q_values[next_obs])
+        elif self.algorithm == 'sarsa':
+            next_action = self.get_action(next_obs) if not terminated else 0
+            future_q_value = self.q_values[next_obs][next_action]
+
         temporal_difference = reward + self.discount_factor * future_q_value - self.q_values[obs][action]
         self.q_values[obs][action] += self.learning_rate * temporal_difference
         self.training_error.append(temporal_difference)
@@ -72,7 +79,7 @@ class GeneralAgent:
         """Generates a consistent folder name based on agent parameters."""
         env_name = self.env.unwrapped.spec.id
         # Including decay rate and number of episodes in the folder name
-        folder_name = f"{env_name}_lr{self.learning_rate:.2f}_eps{self.initial_epsilon:.2f}_epsdec{self.epsilon_decay:.2f}_epsfin{self.final_epsilon:.2f}_disc{self.discount_factor:.3f}_nep{self.n_episodes}"
+        folder_name = f"{env_name}_lr{self.learning_rate:.2f}_eps{self.initial_epsilon:.2f}_epsdec{self.epsilon_decay:.2f}_epsfin{self.final_epsilon:.2f}_disc{self.discount_factor:.3f}_nep{self.n_episodes}_alg{self.algorithm}"
         folder_path = os.path.join("./figures", folder_name)
         os.makedirs(folder_path, exist_ok=True)
         return folder_path
@@ -189,17 +196,19 @@ class GeneralAgent:
         else:
             print("Environment not supported for direct visualization.")
 
-# Usage example:
-agent = GeneralAgent(
-    env_name='Taxi-v3',
-    learning_rate=0.01,
-    initial_epsilon=0.9,
-    epsilon_decay=0.01,
-    final_epsilon=0.1,
-    discount_factor=0.95,  # Explicitly naming the discount factor even though it has a default value
-    n_episodes=100,
-    verbose=False
-)
-agent.train()
-agent.plot_training_info()
-agent.visualize_policy()
+
+if __name__ == "__main__":
+    agent = GeneralAgent(
+        env_name='Taxi-v3',
+        learning_rate=0.01,
+        initial_epsilon=0.9,
+        epsilon_decay=0.01,
+        final_epsilon=0.1,
+        discount_factor=0.95,
+        n_episodes=10000,
+        verbose=False,
+        algorithm='sarsa'  # Choose 'sarsa' or 'q_learning'
+    )
+    agent.train()
+    agent.plot_training_info()
+    agent.visualize_policy()
