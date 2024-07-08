@@ -10,7 +10,7 @@ from general_agent import GeneralAgent
 
 # Define the hyperparameters grid
 learning_rates = [0.01, 0.1]
-initial_epsilons = [0.2, 0.7, 1.0]  # Updated range of initial epsilon values
+initial_epsilons = [0.2, 0.7, 0.95]  # Updated range of initial epsilon values
 epsilon_decays = [0.01, 0.02]
 final_epsilons = [0.01, 0.05]
 discount_factors = [0.9, 0.95, 0.99]  # Discount factors
@@ -30,7 +30,7 @@ for env_name in toy_text_envs:
                             # Create the agent with the current set of hyperparameters
                             agent = GeneralAgent(env_name=env_name, learning_rate=lr, initial_epsilon=init_eps,
                                                  epsilon_decay=eps_decay, final_epsilon=final_eps, 
-                                                 discount_factor=discount, n_episodes=n_episodes, verbose=False)
+                                                 discount_factor=discount, n_episodes=n_episodes, verbose=False, algorithm='sarsa')
                             
                             # Train the agent
                             print(f"Training {env_name} with LR={lr}, InitEps={init_eps}, EpsDecay={eps_decay}, FinalEps={final_eps}, Discount={discount}, Episodes={n_episodes}")
