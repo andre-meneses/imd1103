@@ -17,7 +17,7 @@ discount_factors = [0.9, 0.95, 0.99]  # Discount factors
 n_episodes_list = [20_000, 100_000]
 
 # Add all toy-text environments
-toy_text_envs = ['Blackjack-v1', 'CliffWalking-v0', 'FrozenLake-v1', 'FrozenLake8x8-v1', 'Taxi-v3']
+toy_text_envs = ['Blackjack-v1', 'CliffWalking-v0', 'FrozenLake-v1', 'Taxi-v3']
 
 # Iterate over all combinations of hyperparameters and environments
 for env_name in toy_text_envs:
