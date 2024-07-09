@@ -15,7 +15,7 @@ epsilon_decays = [0.01, 0.1]
 final_epsilons = [0.01]
 discount_factors = [0.95]
 n_episodes_list = [100_000]
-toy_text_envs = ['Blackjack-v1', 'CliffWalking-v0', 'FrozenLake-v1', 'Taxi-v3']
+toy_text_envs = ['FrozenLake-v1', 'Taxi-v3']
 
 
 
@@ -35,7 +35,7 @@ for env_name in toy_text_envs:
                             std_rewards = []
                             
                             # Execute each configuration 5 times
-                            for trial in range(5):
+                            for trial in range(1):
                                 # Create the agent
                                 agent = GeneralAgent(env_name=env_name, learning_rate=lr, initial_epsilon=init_eps,
                                                      epsilon_decay=eps_decay, final_epsilon=final_eps, 

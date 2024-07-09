@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --job-name=fb_1d
+#SBATCH --output=sarsa.%j # Name of stdout output file (%j expands to %jobId)
+#SBATCH --time=0-12:00:00
+#SBATCH --partition=amd-512
+#SBATCH --mail-user=andre_meneses2001@hotmail.com
+#SBATCH --mail-type=ALL
+#SBATCH --account=shell
+#SBATCH --hint=compute_bound
+#SBATCH --cpus-per-task=64
+
+##SBATCH --mem=0
+
+export PYTHONPATH='/home/aemdnascimento/reinforcement_learning/imd1103/'
+
+python3 /home/aemdnascimento/reinforcement_learning/imd1103/grid_search_sarsa.py
